@@ -146,7 +146,6 @@ module.exports = {
         'gradient-pink': theme('gradients.pink'),
         'gradient-purple': theme('gradients.purple'),
         'onboarding': "url('~@/assets/img/onboarding-bg-lg.svg')",
-        'onboarding-sm': "url('~@/assets/img/onboarding-bg-sm.svg')",
         'flare': "url('~@/assets/img/onboarding-flare-lg.png')",
       }),
       height: {
