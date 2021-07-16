@@ -13,8 +13,8 @@ SPDX-License-Identifier: Apache-2.0
 
 <script>
 export default {
+    name: "Spinner",
     inheritAttrs: false,
-    name: "spinner",
     methods: {}
 }
 </script>

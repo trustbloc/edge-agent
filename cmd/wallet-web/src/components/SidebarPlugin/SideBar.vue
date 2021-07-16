@@ -46,7 +46,6 @@ SPDX-License-Identifier: Apache-2.0
       </div>
       <!-- Sidebar ends -->
     </div>
-  </div>
 </template>
   <script>
   import SidebarLink from "./SidebarLink.vue";

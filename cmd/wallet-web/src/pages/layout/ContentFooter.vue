@@ -9,8 +9,8 @@ SPDX-License-Identifier: Apache-2.0
     <div class="text-neutrals-medium mx-auto md:block hidden text-center">
        © {{ date }} TrustBloc ･ Privacy Policy ･ Terms of Service  ･
       <select class="py-4" style="background-color: transparent">
-        <option class="text-neutrals-dark block text-sm" id="english">English</option>
-        <option class="text-neutrals-medium block text-sm" id="french">Français</option>
+        <option id="english" class="text-neutrals-dark block text-sm">English</option>
+        <option id="french" class="text-neutrals-medium block text-sm">Français</option>
       </select>
     </div>
     <div class="text-neutrals-medium md:hidden block">

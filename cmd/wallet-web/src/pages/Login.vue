@@ -169,6 +169,7 @@ SPDX-License-Identifier: Apache-2.0
     export default {
         components: {
             BeatLoader,
+            Logo,
         },
         data() {
             return {
@@ -182,7 +183,6 @@ SPDX-License-Identifier: Apache-2.0
                     "Please do not refresh the page.",
                     "Please wait...",
                 ],
-                logoUrl: this.getLogoUrl(),
             };
         },
         created: async function () {
@@ -219,24 +219,6 @@ SPDX-License-Identifier: Apache-2.0
             this.stopLoading()
             this.loading = false
 
-        },
-        data() {
-            return {
-                statusMsg: '',
-                loading: true,
-                registered: false,
-                messageNum: 0,
-                messages: [
-                    "Getting Started..",
-                    "This could take a minute.",
-                    "Please do not refresh the page.",
-                    "Please wait...",
-                ],
-            };
-        },
-        components: {
-            BeatLoader,
-            Logo,
         },
         methods: {
             ...mapActions({
