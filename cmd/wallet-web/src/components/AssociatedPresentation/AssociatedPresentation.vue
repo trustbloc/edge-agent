@@ -7,19 +7,31 @@ SPDX-License-Identifier: Apache-2.0
 <template>
   <md-card class="md-card-plain associated-presentations">
     <md-card-header data-background-color="green">
-      <h4 class="title">{{ title }}
+      <h4 class="title">
+        {{ title }}
       </h4>
       <div class="title-btn-right">
-        <md-button v-on:click="getPresentations" class="md-icon-button md-dense md-raised md-info">
+        <md-button
+          class="md-icon-button md-dense md-raised md-info"
+          @click="getPresentations"
+        >
           <md-icon>cached</md-icon>
         </md-button>
       </div>
     </md-card-header>
     <md-card-content class="white">
-      <div class="text-center" v-if="presentations.length===0">No connections</div>
+      <div
+        v-if="presentations.length===0"
+        class="text-center"
+      >
+        No connections
+      </div>
       <md-content class="md-content-connections md-scrollbar">
         <md-list class="md-triple-line">
-          <md-list-item v-for="presentation in presentations" :key="presentation.id">
+          <md-list-item
+            v-for="presentation in presentations"
+            :key="presentation.id"
+          >
             <div class="md-list-item-text">
               <span v-if="presentation.name">
                 <span style="color: red">{{ (presentation.name) ? presentation.name : presentation.id }}</span>
@@ -37,7 +49,7 @@ SPDX-License-Identifier: Apache-2.0
 import {mapActions} from 'vuex'
 
 export default {
-  name: "associated-presentation",
+  name: "AssociatedPresentation",
   props: {
     title: {
       type: String,

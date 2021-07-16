@@ -6,8 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 
 <template>
   <ul class="nav nav-mobile-menu">
-    <li>
-    </li>
+    <li />
   </ul>
 </template>
 <script>

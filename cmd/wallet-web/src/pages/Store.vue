@@ -5,80 +5,109 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
-    <div class="content w-screen flex justify-center">
-        <div class="md-layout max-w-screen-xl">
-            <div class="md-layout-item">
-                <form>
-                    <md-card>
-                        <md-card-header style="background-color:#00bcd4">
-                            <h3 class="title">
-                                <md-icon>fingerprint</md-icon>
-                                Credential
-                            </h3>
-                        </md-card-header>
+  <div class="content w-screen flex justify-center">
+    <div class="md-layout max-w-screen-xl">
+      <div class="md-layout-item">
+        <form>
+          <md-card>
+            <md-card-header style="background-color:#00bcd4">
+              <h3 class="title">
+                <md-icon>fingerprint</md-icon>
+                Credential
+              </h3>
+            </md-card-header>
 
-                        <md-card-content v-if="records.length" class="md-layout md-alignment-center-center card-list">
-                            <ul>
-                                <li v-for="(card, index) in records" :key="index">
-                                    <transition name="flip">
-                                        <div class="card" style="padding-bottom: 35px">
-                                            <div class="cardContent">
-                                                <div class="cardHeader">
-                                                    {{card.title}}
-                                                </div>
+            <md-card-content
+              v-if="records.length"
+              class="md-layout md-alignment-center-center card-list"
+            >
+              <ul>
+                <li
+                  v-for="(card, index) in records"
+                  :key="index"
+                >
+                  <transition name="flip">
+                    <div
+                      class="card"
+                      style="padding-bottom: 35px"
+                    >
+                      <div class="cardContent">
+                        <div class="cardHeader">
+                          {{ card.title }}
+                        </div>
 
-                                                <div class="cardBody">
-                                                    <div class="cardDetailsL">
-                                                        <md-icon class="md-size-4x">{{ card.icon}}</md-icon>
-                                                    </div>
-                                                    <div class="cardDetailsR">
-                                                        <p> {{ card.description}}</p>
-                                                        <div v-if="card.body">
-                                                            The verifier can only access below information from your
-                                                            credential.
-                                                            <div v-for="(subj, skey) in card.body" :key="skey">
-                                                                <div class="md-caption" v-if="displayContent(skey)">
-                                                                    <b>{{skey.replace('.', ' ')}} </b>: {{subj}}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </transition>
-                                </li>
-                            </ul>
-
-                        </md-card-content>
-
-                        <md-card-content>
-                            <div v-if="errors.length">
-                                <b>Please correct the following error(s):</b>
-                                <ul>
-                                    <li v-for="error in errors" :key="error" style="color: #9d0006;">{{ error }}</li>
-                                </ul>
-                            </div>
-                            <div class="md-layout md-alignment-center-center">
-                                <div>
-                                    <md-button v-on:click="cancel" class="md-cancel-text" id="cancelBtn">Cancel
-                                    </md-button>
+                        <div class="cardBody">
+                          <div class="cardDetailsL">
+                            <md-icon class="md-size-4x">
+                              {{ card.icon }}
+                            </md-icon>
+                          </div>
+                          <div class="cardDetailsR">
+                            <p> {{ card.description }}</p>
+                            <div v-if="card.body">
+                              The verifier can only access below information from your
+                              credential.
+                              <div
+                                v-for="(subj, skey) in card.body"
+                                :key="skey"
+                              >
+                                <div
+                                  v-if="displayContent(skey)"
+                                  class="md-caption"
+                                >
+                                  <b>{{ skey.replace('.', ' ') }} </b>: {{ subj }}
                                 </div>
-                                <div>
-                                    <md-button v-on:click="store" class="md-raised md-success" id="storeVCBtn"
-                                               :disabled=isDisabled>Confirm
-                                    </md-button>
-                                </div>
+                              </div>
                             </div>
-                        </md-card-content>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </transition>
+                </li>
+              </ul>
+            </md-card-content>
 
-                    </md-card>
-                </form>
-
-            </div>
-        </div>
+            <md-card-content>
+              <div v-if="errors.length">
+                <b>Please correct the following error(s):</b>
+                <ul>
+                  <li
+                    v-for="error in errors"
+                    :key="error"
+                    style="color: #9d0006;"
+                  >
+                    {{ error }}
+                  </li>
+                </ul>
+              </div>
+              <div class="md-layout md-alignment-center-center">
+                <div>
+                  <md-button
+                    id="cancelBtn"
+                    class="md-cancel-text"
+                    @click="cancel"
+                  >
+                    Cancel
+                  </md-button>
+                </div>
+                <div>
+                  <md-button
+                    id="storeVCBtn"
+                    class="md-raised md-success"
+                    :disabled="isDisabled"
+                    @click="store"
+                  >
+                    Confirm
+                  </md-button>
+                </div>
+              </div>
+            </md-card-content>
+          </md-card>
+        </form>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -87,6 +116,21 @@ SPDX-License-Identifier: Apache-2.0
     import {mapGetters} from 'vuex'
 
     export default {
+        data() {
+            return {
+                records: [],
+                storeButton: true,
+                subject: "",
+                issuer: "",
+                issuance: "",
+                errors: [],
+            };
+        },
+        computed: {
+            isDisabled() {
+                return this.storeButton
+            },
+        },
         created: async function () {
             // Load the Credentials
             this.credentialEvent = new CHAPIEventHandler(await this.$webCredentialHandler.receiveCredentialEvent())
@@ -106,21 +150,6 @@ SPDX-License-Identifier: Apache-2.0
 
             // enable send vc button once loaded
             this.storeButton = false
-        },
-        computed: {
-            isDisabled() {
-                return this.storeButton
-            },
-        },
-        data() {
-            return {
-                records: [],
-                storeButton: true,
-                subject: "",
-                issuer: "",
-                issuance: "",
-                errors: [],
-            };
         },
         methods: {
             ...mapGetters(['getCurrentUser']),

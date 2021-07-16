@@ -5,10 +5,22 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
-    <div class="content">
-        <div class="px-4">
-            <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
-                <md-card class="md-card-plain">
+  <div class="content">
+    <div class="px-4">
+      <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
+        <md-card class="md-card-plain">
+          <md-card-content>
+            <md-tabs
+              class="md-success"
+              md-alignment="left"
+            >
+              <md-tab
+                id="tab-home"
+                md-label="Digital Identity Preference"
+                md-icon="how_to_reg"
+              >
+                <div class="md-layout-item md-layout md-gutter">
+                  <div class="md-layout-item md-medium-size-50 md-xsmall-size-75 md-size-75">
                     <md-card-content>
                         <md-tabs class="md-success" md-alignment="left">
 
@@ -263,10 +275,299 @@ SPDX-License-Identifier: Apache-2.0
                             </md-tab>
                         </md-tabs>
                     </md-card-content>
+                  </div>
+                </div>
+              </md-tab>
+
+              <md-tab
+                id="tab-home-1"
+                md-label="Create TrustBloc Digital Identity"
+                md-icon="add_box"
+              >
+                <div class="md-layout-item md-layout md-gutter">
+                  <div class="md-layout-item">
+                    <md-card md-alignment="left">
+                      <md-card-header data-background-color="green">
+                        <h4 class="title">
+                          <b>Create New Trustbloc Digital Identity</b>
+                        </h4>
+                      </md-card-header>
+                      <md-card-content>
+                        <md-label>
+                          <md-icon>vpn_key</md-icon>
+                          Key Type:
+                        </md-label>
+                        <md-field>
+                          <select
+                            id="selectKey"
+                            v-model="keyType"
+                            style="color: grey;"
+                            md-alignment="left"
+                          >
+                            <option value="ED25519">
+                              Ed25519
+                            </option>
+                            <option value="ECDSAP256IEEEP1363">
+                              P-256
+                            </option>
+                            <option value="ECDSAP384IEEEP1363">
+                              P-384
+                            </option>
+                            <option value="BLS12381G2">
+                              BLS12381G2
+                            </option>
+                          </select>
+                        </md-field>
+
+                        <md-label>
+                          <md-icon>lock</md-icon>
+                          Signature Suite:
+                        </md-label>
+
+                        <md-field>
+                          <select
+                            id="signKey"
+                            v-model="signType"
+                            style="color: grey;"
+                          >
+                            <option value="Ed25519VerificationKey2018">
+                              Ed25519VerificationKey2018
+                            </option>
+                            <option value="JwsVerificationKey2020">
+                              JwsVerificationKey2020
+                            </option>
+                            <option value="Bls12381G2Key2020">
+                              Bls12381G2Key2020
+                            </option>
+                          </select>
+                        </md-field>
+
+                        <md-label>
+                          <md-icon>design_services</md-icon>
+                          Key Purpose:
+                        </md-label>
+
+                        <md-field>
+                          <select
+                            id="puporseKey"
+                            v-model="purpose"
+                            style="color: grey;"
+                          >
+                            <option value="all">
+                              all
+                            </option>
+                            <option value="authentication">
+                              authentication
+                            </option>
+                            <option value="assertionMethod">
+                              assertionMethod
+                            </option>
+                          </select>
+                        </md-field>
+
+                        <md-button
+                          id="createDIDBtn"
+                          class="md-button md-info md-square"
+                          @click="createDID"
+                        >
+                          <b>Create and
+                            Save</b>
+                        </md-button>
+
+                        <div v-if="errors.length">
+                          <b>Please correct the following error(s):</b>
+                          <ul>
+                            <li
+                              v-for="error in errors"
+                              :key="error"
+                            >
+                              {{ error }}
+                            </li>
+                          </ul>
+                        </div>
+                        <div
+                          v-if="loading"
+                          style="margin-left: 40%;margin-top: 20%;height: 200px;"
+                        >
+                          <div class="md-layout">
+                            <md-progress-spinner
+                              :md-diameter="100"
+                              class="md-primary"
+                              :md-stroke="10"
+                              md-mode="indeterminate"
+                            />
+                          </div>
+                        </div>
+                        <div v-if="createDIDSuccess">
+                          <div
+                            class="md-layout-item md-size-100"
+                            style="color: green"
+                          >
+                            <label
+                              id="create-did-success"
+                              class="md-helper-text"
+                            >Saved your
+                              DID successfully.</label>
+                          </div>
+                        </div>
+                        <md-field>
+                          <md-textarea
+                            v-model="didDocTextArea"
+                            readonly
+                            style="min-height:300px;"
+                          />
+                        </md-field>
+                      </md-card-content>
+                    </md-card>
+                  </div>
+                </div>
+              </md-tab>
+
+              <md-tab
+                id="tab-pages"
+                md-label="Import Any Digital Identity"
+                md-icon="upload_file"
+              >
+                <md-card class="md-card-plain">
+                  <md-card-header data-background-color="green">
+                    <h4 class="title">
+                      Import Any Digital Identity
+                    </h4>
+                  </md-card-header>
+                  <md-card-content>
+                    <div class="md-layout-item md-size-100">
+                      <md-icon>line_style</md-icon>
+                      <label class="md-helper-text">Enter Digital Identity</label>
+                      <md-field maxlength="5">
+                        <md-input
+                          id="did"
+                          v-model="didID"
+                          required
+                        />
+                      </md-field>
+                    </div>
+
+                    <div class="md-layout-item md-size-100">
+                      <md-icon>vpn_key</md-icon>
+                      <label class="md-helper-text">Select Key Format</label>
+                      <div />
+                      <md-checkbox
+                        v-model="keyFormat"
+                        value="Base58"
+                      >
+                        Base58
+                      </md-checkbox>
+                      <md-checkbox
+                        v-model="keyFormat"
+                        value="JWK"
+                      >
+                        JWK
+                      </md-checkbox>
+                      <md-field style="margin-top: -25px" />
+                    </div>
+
+                    <div class="md-layout-item md-size-100">
+                      <md-icon>vpn_key</md-icon>
+                      <label class="md-helper-text">Enter Private Key (in JWK or Base58
+                        format)</label>
+                      <md-field maxlength="5">
+                        <md-input
+                          id="privateKeyStr"
+                          v-model="privateKeyStr"
+                          required
+                        />
+                      </md-field>
+                    </div>
+
+                    <div class="md-layout-item md-size-100">
+                      <md-icon>
+                        aspect_ratio
+                        <md-tooltip md-direction="top">
+                          Enter key ID for above private key
+                        </md-tooltip>
+                      </md-icon>
+                      <label class="md-helper-text">Enter matching Key ID</label>
+                      <md-field maxlength="5">
+                        <md-input
+                          id="keyID"
+                          v-model="keyID"
+                          required
+                        />
+                      </md-field>
+                    </div>
+
+                    <div
+                      v-if="showImportKeyType"
+                      class="md-layout-item md-size-100"
+                    >
+                      <md-icon>style</md-icon>
+                      <label class="md-helper-text">Select Key Type</label>
+                      <md-field>
+                        <select
+                          id="importKeyType"
+                          v-model="importKeyType"
+                          style="color: grey;"
+                          md-alignment="left"
+                        >
+                          <option value="ed25519verificationkey2018">
+                            Ed25519VerificationKey2018
+                          </option>
+                          <option value="bls12381g1key2020">
+                            Bls12381G1Key2020
+                          </option>
+                        </select>
+                      </md-field>
+                    </div>
+
+                    <md-button
+                      id="saveDIDBtn"
+                      class="md-button md-success md-square md-theme-default md-large-size-100 md-size-100"
+                      @click="saveAnyDID"
+                    >
+                      Resolve and Save Digital
+                      Identity
+                    </md-button>
+                    <div v-if="saveErrors.length">
+                      <b>Please correct the following error(s):</b>
+                      <ul>
+                        <li
+                          v-for="error in saveErrors"
+                          :key="error"
+                        >
+                          {{ error }}
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div v-if="saveAnyDIDSuccess">
+                      <div
+                        class="md-layout-item md-size-100"
+                        style="color: green"
+                      >
+                        <label
+                          id="save-anydid-success"
+                          class="md-helper-text"
+                        >Saved your DID
+                          successfully.</label>
+                      </div>
+                    </div>
+
+                    <md-field>
+                      <md-textarea
+                        v-model="anyDidDocTextArea"
+                        readonly
+                        style="min-height:360px;"
+                      />
+                    </md-field>
+                  </md-card-content>
                 </md-card>
-            </div>
-        </div>
+              </md-tab>
+            </md-tabs>
+          </md-card-content>
+        </md-card>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -448,6 +749,15 @@ SPDX-License-Identifier: Apache-2.0
                 keyIDs: [],
                 preference: {}
             };
+        },
+        computed: {
+            preferenceSelected() {
+                return (this.selectedDID) && (this.selectedSignType)
+                    && (this.preference.controller != this.selectedDID || this.preference.proofType != this.selectedSignType)
+            },
+            showImportKeyType(){
+                return this.keyFormat == "Base58"
+            }
         }
 
     }

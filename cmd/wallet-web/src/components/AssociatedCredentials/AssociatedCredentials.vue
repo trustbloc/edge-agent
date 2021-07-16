@@ -7,19 +7,31 @@ SPDX-License-Identifier: Apache-2.0
 <template>
   <md-card class="md-card-plain associated-credentials">
     <md-card-header data-background-color="green">
-      <h4 class="title">{{ title }}
+      <h4 class="title">
+        {{ title }}
       </h4>
       <div class="title-btn-right">
-        <md-button v-on:click="getCredentials" class="md-icon-button md-dense md-raised md-info">
+        <md-button
+          class="md-icon-button md-dense md-raised md-info"
+          @click="getCredentials"
+        >
           <md-icon>cached</md-icon>
         </md-button>
       </div>
     </md-card-header>
     <md-card-content class="white">
-      <div class="text-center" v-if="credentials.length===0">No connections</div>
+      <div
+        v-if="credentials.length===0"
+        class="text-center"
+      >
+        No connections
+      </div>
       <md-content class="md-content-connections md-scrollbar">
         <md-list class="md-triple-line">
-          <md-list-item v-for="credential in credentials" :key="credential.id">
+          <md-list-item
+            v-for="credential in credentials"
+            :key="credential.id"
+          >
             <div class="md-list-item-text">
               <span v-if="credential.name">
                 <span style="color: red">{{ (credential.name) ? credential.name : credential.id }}</span>
@@ -37,7 +49,7 @@ SPDX-License-Identifier: Apache-2.0
 import {mapActions} from 'vuex'
 
 export default {
-  name: "associated-credentials",
+  name: "AssociatedCredentials",
   props: {
     title: {
       type: String,

@@ -5,73 +5,102 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
-
-    <div v-if="loading" class="w-screen" style="margin-left: 40%;margin-top: 20%;height: 200px;">
-        <div class="md-layout">
-            <md-progress-spinner :md-diameter="100" class="md-accent" :md-stroke="10"
-                                 md-mode="indeterminate"></md-progress-spinner>
-        </div>
+  <div
+    v-if="loading"
+    class="w-screen"
+    style="margin-left: 40%;margin-top: 20%;height: 200px;"
+  >
+    <div class="md-layout">
+      <md-progress-spinner
+        :md-diameter="100"
+        class="md-accent"
+        :md-stroke="10"
+        md-mode="indeterminate"
+      />
     </div>
+  </div>
 
-    <div v-else class="md-layout w-screen flex justify-center">
-        <div class="md-layout-item max-w-screen-md">
+  <div
+    v-else
+    class="md-layout w-screen flex justify-center"
+  >
+    <div class="md-layout-item max-w-screen-md">
+      <md-card class="md-card-plain">
+        <md-card-header>
+          <h4 class="title">
+            Connect your wallet
+          </h4>
+        </md-card-header>
 
-            <md-card class="md-card-plain">
-                <md-card-header>
-                    <h4 class="title">Connect your wallet</h4>
-                </md-card-header>
+        <md-card-content style="background-color: white; ">
+          <div v-if="errors.length">
+            <b>Failed with following error(s):</b>
+            <ul>
+              <li
+                v-for="error in errors"
+                :key="error"
+                style="color: #9d0006;"
+              >
+                {{ error }}
+              </li>
+            </ul>
+          </div>
 
-                <md-card-content style="background-color: white; ">
-                    <div v-if="errors.length">
-                        <b>Failed with following error(s):</b>
-                        <ul>
-                            <li v-for="error in errors" :key="error" style="color: #9d0006;">{{ error }}</li>
-                        </ul>
-                    </div>
+          <md-card-content class="viewport">
+            This issuer would like to
+            connect to your wallet for secured communication.
+            <governance
+              :govn-v-c="govnVC"
+              :request-origin="requestOrigin"
+            />
+          </md-card-content>
 
-                    <md-card-content class="viewport">
-                        This issuer would like to
-                        connect to your wallet for secured communication.
-                        <governance :govn-v-c="govnVC" :request-origin="requestOrigin"/>
-                    </md-card-content>
+          <md-card-content
+            v-if="userCredentials.length"
+            class="viewport"
+          >
+            Here are the credentials being sent to your wallet,
 
-                    <md-card-content v-if="userCredentials.length" class="viewport">
-                        Here are the credentials being sent to your wallet,
+            <md-list class="md-double-line">
+              <md-list-item
+                v-for="credential in userCredentials"
+                :key="credential"
+              >
+                <md-icon class="md-primary md-size-2x">
+                  perm_identity
+                </md-icon>
 
-                        <md-list class="md-double-line">
-                            <md-list-item v-for="credential in userCredentials" :key="credential">
-                                <md-icon class="md-primary md-size-2x">perm_identity</md-icon>
+                <div class="md-list-item-text">
+                  <span>{{ credential.name ? credential.name : 'Credential name not provided' }}</span>
+                  <span>{{ credential.description }}</span>
+                </div>
+              </md-list-item>
+            </md-list>
+          </md-card-content>
 
-                                <div class="md-list-item-text">
-                                    <span>{{credential.name ? credential.name : 'Credential name not provided'}}</span>
-                                    <span>{{credential.description}}</span>
-                                </div>
+          <md-divider />
 
-
-                            </md-list-item>
-                        </md-list>
-                    </md-card-content>
-
-                    <md-divider></md-divider>
-
-                    <md-card-content class="md-layout md-alignment-center-center">
-                        <md-button v-on:click="connect"
-                                   style="margin-right: 5%"
-                                   class="md-button md-info md-square md-theme-default md-large-size-100 md-size-100"
-                                   id="didconnect">{{buttonLabel}}
-                        </md-button>
-                        <md-button v-on:click="cancel" class="md-cancel-text" id="cancelBtn">
-                            Cancel
-                        </md-button>
-                    </md-card-content>
-
-                </md-card-content>
-
-            </md-card>
-
-        </div>
+          <md-card-content class="md-layout md-alignment-center-center">
+            <md-button
+              id="didconnect"
+              style="margin-right: 5%"
+              class="md-button md-info md-square md-theme-default md-large-size-100 md-size-100"
+              @click="connect"
+            >
+              {{ buttonLabel }}
+            </md-button>
+            <md-button
+              id="cancelBtn"
+              class="md-cancel-text"
+              @click="cancel"
+            >
+              Cancel
+            </md-button>
+          </md-card-content>
+        </md-card-content>
+      </md-card>
     </div>
-
+  </div>
 </template>
 <script>
 
@@ -81,16 +110,6 @@ SPDX-License-Identifier: Apache-2.0
 
     export default {
         components: {Governance},
-        created: async function () {
-            this.wallet = new DIDConn(this.getAgentInstance(), this.getCurrentUser().profile, this.getAgentOpts(), this.$parent.credentialEvent)
-
-            this.requestOrigin = this.wallet.chapiHandler.getRequestor()
-            this.userCredentials = this.wallet.userCredentials
-            this.govnVC = this.wallet.govnVC
-            this.buttonLabel = this.userCredentials.length > 0 ? 'Store & Connect' : 'Connect'
-
-            this.loading = false
-        },
         data() {
             return {
                 errors: [],
@@ -100,6 +119,16 @@ SPDX-License-Identifier: Apache-2.0
                 buttonLabel: "Connect",
                 govnVC: null,
             };
+        },
+        created: async function () {
+            this.wallet = new DIDConn(this.getAgentInstance(), this.getCurrentUser().profile, this.getAgentOpts(), this.$parent.credentialEvent)
+
+            this.requestOrigin = this.wallet.chapiHandler.getRequestor()
+            this.userCredentials = this.wallet.userCredentials
+            this.govnVC = this.wallet.govnVC
+            this.buttonLabel = this.userCredentials.length > 0 ? 'Store & Connect' : 'Connect'
+
+            this.loading = false
         },
         methods: {
             ...mapGetters('agent', {getAgentInstance: 'getInstance'}),

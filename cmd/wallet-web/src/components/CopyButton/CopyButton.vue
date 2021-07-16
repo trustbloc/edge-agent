@@ -5,15 +5,23 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
-  <md-button :disabled="!content" v-on:click="copyToClipboard" class="md-icon-button md-dense md-raised md-info">
+  <md-button
+    :disabled="!content"
+    class="md-icon-button md-dense md-raised md-info"
+    @click="copyToClipboard"
+  >
     <md-icon>content_copy</md-icon>
-    <textarea style="display: none" id="content" :value="content"/>
+    <textarea
+      id="content"
+      style="display: none"
+      :value="content"
+    />
   </md-button>
 </template>
 
 <script>
 export default {
-  name: "copy-button",
+  name: "CopyButton",
   props: {
     content: {
       type: String,

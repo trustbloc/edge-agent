@@ -5,9 +5,9 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
-    <div>
-        <component v-bind:is="component"></component>
-    </div>
+  <div>
+    <component :is="component" />
+  </div>
 </template>
 <script>
 
@@ -41,6 +41,11 @@ SPDX-License-Identifier: Apache-2.0
     }
 
     export default {
+        data() {
+            return {
+                component: ""
+            };
+        },
         beforeCreate: async function () {
             this.credentialEvent = await this.$webCredentialHandler.receiveCredentialEvent();
             if (!this.credentialEvent.credentialRequestOptions.web.VerifiablePresentation) {
@@ -50,11 +55,6 @@ SPDX-License-Identifier: Apache-2.0
 
             console.log("incoming web credential event", this.credentialEvent)
             this.component = getComponent(this.credentialEvent)
-        },
-        data() {
-            return {
-                component: ""
-            };
         }
     }
 </script>

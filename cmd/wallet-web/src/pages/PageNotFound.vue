@@ -5,14 +5,15 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
-    <div class="col-full">
-        <h1>Not Found</h1>
-        <p>Ooops, we couldn't find what you are looking for. Why don't you
-            <router-link :to="{name: 'dashboard'}">
-                go home instead?
-            </router-link>
-        </p>
-    </div>
+  <div class="col-full">
+    <h1>Not Found</h1>
+    <p>
+      Ooops, we couldn't find what you are looking for. Why don't you
+      <router-link :to="{name: 'dashboard'}">
+        go home instead?
+      </router-link>
+    </p>
+  </div>
 </template>
 
 <script>

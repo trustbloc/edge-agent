@@ -6,13 +6,19 @@ SPDX-License-Identifier: Apache-2.0
 
 <template>
   <div class="font-sans">
-    <div class="loader" v-if="!$root.loaded">
-      <md-progress-spinner :md-diameter="100" :md-stroke="10" md-mode="indeterminate"></md-progress-spinner>
+    <div
+      v-if="!$root.loaded"
+      class="loader"
+    >
+      <md-progress-spinner
+        :md-diameter="100"
+        :md-stroke="10"
+        md-mode="indeterminate"
+      />
       <div>Loading Agent...</div>
     </div>
-    <router-view v-if="$root.loaded"></router-view>
+    <router-view v-if="$root.loaded" />
   </div>
-
 </template>
 
 <script>

@@ -5,145 +5,229 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
-    <div v-if="loading" class="w-screen" style="margin-left: 40%;margin-top: 20%;height: 200px;">
-        <div class="md-layout">
-            <md-progress-spinner :md-diameter="100" class="md-accent" :md-stroke="10"
-                                 md-mode="indeterminate"></md-progress-spinner>
-        </div>
+  <div
+    v-if="loading"
+    class="w-screen"
+    style="margin-left: 40%;margin-top: 20%;height: 200px;"
+  >
+    <div class="md-layout">
+      <md-progress-spinner
+        :md-diameter="100"
+        class="md-accent"
+        :md-stroke="10"
+        md-mode="indeterminate"
+      />
     </div>
-    <div v-else class="md-layout w-screen flex justify-center">
-        <div class="md-layout-item max-w-screen-sm">
-            <div class="md-layout md-alignment-center-center flex flex-col items-start" style="margin-top: 20px;">
-                <div class="md-headline">Credential Presentation Requested</div>
-                <div class="md-subheading">A credential presentation is been requested:</div>
-            </div>
+  </div>
+  <div
+    v-else
+    class="md-layout w-screen flex justify-center"
+  >
+    <div class="md-layout-item max-w-screen-sm">
+      <div
+        class="md-layout md-alignment-center-center flex flex-col items-start"
+        style="margin-top: 20px;"
+      >
+        <div class="md-headline">
+          Credential Presentation Requested
+        </div>
+        <div class="md-subheading">
+          A credential presentation is been requested:
+        </div>
+      </div>
 
-            <div style="margin: 10px"></div>
+      <div style="margin: 10px" />
 
-            <div class="md-layout md-alignment-center-center">By</div>
+      <div class="md-layout md-alignment-center-center">
+        By
+      </div>
 
-            <div class="md-layout md-alignment-center-center">
+      <div class="md-layout md-alignment-center-center">
+        <div style="padding-bottom: 10px">
+          <governance
+            :govn-v-c="govnVC"
+            :request-origin="requestOrigin"
+            :issuer="false"
+          />
+        </div>
+      </div>
 
-                <div style="padding-bottom: 10px">
-                    <governance :govn-v-c="govnVC" :request-origin="requestOrigin" :issuer="false"/>
+      <div style="margin: 20px" />
+
+      <div v-if="errors.length">
+        <b>Failed with following error(s):</b>
+        <md-field style="margin-top: -15px">
+          <ul>
+            <li
+              v-for="error in errors"
+              :key="error"
+              style="color: #9d0006;"
+            >
+              {{ error }}
+            </li>
+          </ul>
+        </md-field>
+
+        <md-button
+          id="cancelBtnNrc"
+          style="background-color: #9d0006 !important;"
+          class="md-cancel-text"
+          @click="cancel"
+        >
+          Cancel
+        </md-button>
+      </div>
+
+      <div
+        v-if="reasons.length || presExchReasons.length"
+        class="md-layout md-alignment-center-center reasons"
+      >
+        <ul>
+          <md-card
+            class="md-layout md-alignment-center-center"
+            style="background: none !important;"
+          >
+            <md-card-expand>
+              <md-card-actions
+                md-alignment="space-between"
+                style="background: none !important;"
+              >
+                <div class="md-subheading">
+                  Reason:
                 </div>
+                <md-card-expand-trigger>
+                  <md-button class="md-icon-button">
+                    <md-icon>keyboard_arrow_down</md-icon>
+                  </md-button>
+                </md-card-expand-trigger>
+              </md-card-actions>
 
-            </div>
-
-            <div style="margin: 20px"></div>
-
-            <div v-if="errors.length">
-                <b>Failed with following error(s):</b>
-                <md-field style="margin-top: -15px">
-                    <ul>
-                        <li v-for="error in errors" :key="error" style="color: #9d0006;">{{ error }}</li>
-                    </ul>
-                </md-field>
-
-                <md-button v-on:click="cancel" style="background-color: #9d0006 !important;" class="md-cancel-text"
-                           id="cancelBtnNrc">
-                    Cancel
-                </md-button>
-            </div>
-
-            <div class="md-layout md-alignment-center-center reasons" v-if="reasons.length || presExchReasons.length">
-                <ul>
-                    <md-card class="md-layout md-alignment-center-center" style="background: none !important;">
-                        <md-card-expand>
-                            <md-card-actions md-alignment="space-between" style="background: none !important;">
-                                <div class="md-subheading">Reason:</div>
-                                <md-card-expand-trigger>
-                                    <md-button class="md-icon-button">
-                                        <md-icon>keyboard_arrow_down</md-icon>
-                                    </md-button>
-                                </md-card-expand-trigger>
-                            </md-card-actions>
-
-                            <md-card-expand-content>
-                                <md-card-content>
-                                    <ul>
-                                        <li v-for="(reason, index) in reasons" :key="index">
-                                            <b>{{reason}}</b>
-                                        </li>
-
-                                        <li v-for="(requirement, index) in presExchReasons" :key="index">
-                                            <b>{{requirement.name}}</b>: {{requirement.purpose}}
-                                            <div>{{requirement.rule}}</div>
-                                            <ul>
-                                                <li v-for="descriptor in requirement.descriptors"
-                                                    :key="descriptor.name">
-                                                    <b>{{descriptor.name}} </b>{{descriptor.purpose}}
-                                                    <ul>
-                                                        <li v-for="constraint in descriptor.constraints"
-                                                            :key="constraint">
-                                                            {{ constraint}}
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </md-card-content>
-                            </md-card-expand-content>
-                        </md-card-expand>
-                    </md-card>
-                </ul>
-            </div>
-
-            <md-card-content v-if="records.length" class="md-layout md-alignment-center-center card-list">
-                <ul>
-                    <li v-for="(card, index) in records" :key="index">
-                        <transition name="flip">
-                            <div class="card" style="padding-bottom: 35px">
-                                <div class="cardContent">
-                                    <div class="cardHeader">
-                                        {{card.title}}
-                                    </div>
-
-                                    <div class="cardBody">
-                                        <div class="cardDetailsL">
-                                            <md-icon class="md-size-4x">{{ card.icon}}</md-icon>
-                                        </div>
-                                        <div class="cardDetailsR">
-                                            <p> {{ card.description}}</p>
-                                            <div v-if="card.body">
-                                                The verifier can only access below information from your credential.
-                                                <div v-for="(subj, skey) in card.body" :key="skey">
-                                                    <div class="md-caption" v-if="displayContent(skey)">
-                                                        <b>{{skey.replace('.', ' ')}} </b>: {{subj}}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </transition>
+              <md-card-expand-content>
+                <md-card-content>
+                  <ul>
+                    <li
+                      v-for="(reason, index) in reasons"
+                      :key="index"
+                    >
+                      <b>{{ reason }}</b>
                     </li>
-                </ul>
-            </md-card-content>
+
+                    <li
+                      v-for="(requirement, index) in presExchReasons"
+                      :key="index"
+                    >
+                      <b>{{ requirement.name }}</b>: {{ requirement.purpose }}
+                      <div>{{ requirement.rule }}</div>
+                      <ul>
+                        <li
+                          v-for="descriptor in requirement.descriptors"
+                          :key="descriptor.name"
+                        >
+                          <b>{{ descriptor.name }} </b>{{ descriptor.purpose }}
+                          <ul>
+                            <li
+                              v-for="constraint in descriptor.constraints"
+                              :key="constraint"
+                            >
+                              {{ constraint }}
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </md-card-content>
+              </md-card-expand-content>
+            </md-card-expand>
+          </md-card>
+        </ul>
+      </div>
+
+      <md-card-content
+        v-if="records.length"
+        class="md-layout md-alignment-center-center card-list"
+      >
+        <ul>
+          <li
+            v-for="(card, index) in records"
+            :key="index"
+          >
+            <transition name="flip">
+              <div
+                class="card"
+                style="padding-bottom: 35px"
+              >
+                <div class="cardContent">
+                  <div class="cardHeader">
+                    {{ card.title }}
+                  </div>
+
+                  <div class="cardBody">
+                    <div class="cardDetailsL">
+                      <md-icon class="md-size-4x">
+                        {{ card.icon }}
+                      </md-icon>
+                    </div>
+                    <div class="cardDetailsR">
+                      <p> {{ card.description }}</p>
+                      <div v-if="card.body">
+                        The verifier can only access below information from your credential.
+                        <div
+                          v-for="(subj, skey) in card.body"
+                          :key="skey"
+                        >
+                          <div
+                            v-if="displayContent(skey)"
+                            class="md-caption"
+                          >
+                            <b>{{ skey.replace('.', ' ') }} </b>: {{ subj }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </transition>
+          </li>
+        </ul>
+      </md-card-content>
 
 
-            <div v-if="showShareCredential" class="md-layout md-alignment-center-center">
-                <p class="md-body-1">By clicking Agree you will be sharing a unique identifier to <b
-                        style="color: #2E7D32">{{requestOrigin}}</b>, the Credential content, and your digital
-                    signature.
-                    <a href="https://www.w3.org/TR/vc-data-model/#proofs-signatures" target="_blank">Learn more</a></p>
+      <div
+        v-if="showShareCredential"
+        class="md-layout md-alignment-center-center"
+      >
+        <p class="md-body-1">
+          By clicking Agree you will be sharing a unique identifier to <b
+            style="color: #2E7D32"
+          >{{ requestOrigin }}</b>, the Credential content, and your digital
+          signature.
+          <a
+            href="https://www.w3.org/TR/vc-data-model/#proofs-signatures"
+            target="_blank"
+          >Learn more</a>
+        </p>
 
-                <md-button v-on:click="share"
-                           class="md-button md-info md-square md-theme-default md-large-size-100 md-size-100 col"
-                           style="background-color: #29a329 !important;" id="share-credentials">
-                    Agree
-                </md-button>
-                <md-button v-on:click="cancel" style="margin-left: 5px; background-color: #9d0006 !important;"
-                           class="md-cancel-text" id="cancelBtn">
-                    Cancel
-                </md-button>
-            </div>
-
-        </div>
+        <md-button
+          id="share-credentials"
+          class="md-button md-info md-square md-theme-default md-large-size-100 md-size-100 col"
+          style="background-color: #29a329 !important;"
+          @click="share"
+        >
+          Agree
+        </md-button>
+        <md-button
+          id="cancelBtn"
+          style="margin-left: 5px; background-color: #9d0006 !important;"
+          class="md-cancel-text"
+          @click="cancel"
+        >
+          Cancel
+        </md-button>
+      </div>
     </div>
+  </div>
 </template>
 <script>
 
@@ -167,6 +251,18 @@ SPDX-License-Identifier: Apache-2.0
     export default {
         components: {
             Governance
+        },
+        data() {
+            return {
+                errors: [],
+                requestOrigin: "",
+                loading: true,
+                allIcons: ['account_box', 'contacts', 'person', 'person_outline', 'card_membership', 'portrait', 'bento'],
+                records: [],
+                govnVC: null,
+                reasons: [],
+                presExchReasons: []
+            };
         },
         created: async function () {
             this.loading = true
@@ -197,18 +293,6 @@ SPDX-License-Identifier: Apache-2.0
             this.requestOrigin = this.chapiHandler.getRequestor()
 
             this.loading = false
-        },
-        data() {
-            return {
-                errors: [],
-                requestOrigin: "",
-                loading: true,
-                allIcons: ['account_box', 'contacts', 'person', 'person_outline', 'card_membership', 'portrait', 'bento'],
-                records: [],
-                govnVC: null,
-                reasons: [],
-                presExchReasons: []
-            };
         },
         methods: {
             ...mapGetters('agent', {getAgentInstance: 'getInstance'}),

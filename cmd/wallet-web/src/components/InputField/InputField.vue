@@ -5,20 +5,33 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
-    <div class="input-container">
-        <input :id="'input-' + label" v-bind="$attrs" v-on="$listeners" :value="value" @input="$emit('update', $event.target.value)">
-        <label :for="'input-' + label" class="input-label">{{ label }}</label>
-        <span class="input-helper">{{ helperMessage }}</span>
-        <div class="fader" />
-        <!-- TODO: use inline svg instead once https://github.com/trustbloc/edge-agent/issues/816 is fixed -->
-        <img src="@/assets/img/danger-icon.svg" />
-    </div>
+  <div class="input-container">
+    <input
+      :id="'input-' + label"
+      v-bind="$attrs"
+      :value="value"
+      v-on="$listeners"
+      @input="$emit('update', $event.target.value)"
+    >
+    <label
+      :for="'input-' + label"
+      class="input-label"
+    >{{ label }}</label>
+    <span class="input-helper">{{ helperMessage }}</span>
+    <div class="fader" />
+    <!-- TODO: use inline svg instead once https://github.com/trustbloc/edge-agent/issues/816 is fixed -->
+    <img src="@/assets/img/danger-icon.svg">
+  </div>
 </template>
 
 <script>
 export default {
+    name: "InputField",
     inheritAttrs: false,
-    name: "input-field",
+    model: {
+        prop: "value",
+        event: "update"
+    },
     props: {
         label: {
             type: String,
@@ -32,10 +45,6 @@ export default {
             type: String,
             default: '',
         },
-    },
-    model: {
-        prop: "value",
-        event: "update"
     },
     methods: {},
 }

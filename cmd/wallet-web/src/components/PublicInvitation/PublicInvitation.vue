@@ -7,17 +7,33 @@ SPDX-License-Identifier: Apache-2.0
 <template>
   <md-card class="md-card-plain">
     <md-card-header data-background-color="green">
-      <h4 class="title">{{ title }}</h4>
+      <h4 class="title">
+        {{ title }}
+      </h4>
       <div class="title-btn-right">
-        <copy-button :content="content"/>
+        <copy-button :content="content" />
       </div>
     </md-card-header>
     <md-card-content class="white">
       <div class="text-center">
-        <div style="line-break: anywhere;" v-if="content">{{ content }}</div>
-        <div class="error" v-if="error">{{ error }}</div>
+        <div
+          v-if="content"
+          style="line-break: anywhere;"
+        >
+          {{ content }}
+        </div>
+        <div
+          v-if="error"
+          class="error"
+        >
+          {{ error }}
+        </div>
       </div>
-      <input type="hidden" id="created-invitation" :value="content">
+      <input
+        id="created-invitation"
+        type="hidden"
+        :value="content"
+      >
     </md-card-content>
   </md-card>
 </template>
@@ -27,14 +43,14 @@ import {mapGetters, mapActions} from 'vuex'
 import CopyButton from "../CopyButton/CopyButton";
 
 export default {
-  name: "public-invitation",
+  name: "PublicInvitation",
+  components: {CopyButton},
   props: {
     title: {
       type: String,
       default: 'Make New Friends By Sharing This Invitation!'
     },
   },
-  components: {CopyButton},
   methods: {
     ...mapActions(['createInvitation']),
     async generatePublicInvitation() {
@@ -55,13 +71,13 @@ export default {
       }
     },
   },
-  beforeMount() {
-    this.generatePublicInvitation()
-  },
   watch: {
     isMediatorRegistered() {
       this.generatePublicInvitation()
     }
+  },
+  beforeMount() {
+    this.generatePublicInvitation()
   },
   computed: mapGetters(['isMediatorRegistered', 'agentDefaultLabel']),
   data: () => ({

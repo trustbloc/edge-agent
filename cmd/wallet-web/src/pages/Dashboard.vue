@@ -5,93 +5,127 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
+  <div class="content">
     <div class="content">
-        <div class="content">
-            <div class="md-layout">
-                <div>
-                    <md-label style="color: #1B5E20; font-size: 16px; margin: 5px">
-                        <span v-if="loadingStatus === 'inprogress'">
-                            <pulse-loader :color="'green'" :size="5"
-                                          style="float: left; margin-right: 5px"></pulse-loader> Setting up your user for secured communication.
-                        </span>
-                        <span v-else-if="loadingStatus === 'success'" id="dashboard-success-msg" class="px-24">
-                             <md-icon style="color: green" class="px-4">check_circle_outline</md-icon> Successfully setup your user for secured communication.
-                        </span>
-                        <span v-else-if="loadingStatus === 'failed'">
-                            <md-icon style="color: red;" class="px-4">warning</md-icon>
-                            <b>Warning:</b> Failed to connect to server. Your wallet can not participate in secured communication.
-                        </span>
-                    </md-label>
-                    <div class="md-card px-24" md-with-hover v-if="cards.length">
-                        <md-card-content>
-                            <ul class="credential-list">
-                                <li v-on:click="toggleCard(card)" v-for="(card, index) in cards" :key="index">
-                                    <transition name="flip">
-                                        <div v-if="!card.flipped" v-bind:key="card.flipped" class="card">
-                                            <div class="cardContent">
-                                                <div class="cardHeader">
-                                                    {{credDisplayName(card.content)}}
-                                                </div>
+      <div class="md-layout">
+        <div>
+          <md-label style="color: #1B5E20; font-size: 16px; margin: 5px">
+            <span v-if="loadingStatus === 'inprogress'">
+              <pulse-loader
+                :color="'green'"
+                :size="5"
+                style="float: left; margin-right: 5px"
+              /> Setting up your user for secured communication.
+            </span>
+            <span
+              v-else-if="loadingStatus === 'success'"
+              id="dashboard-success-msg"
+              class="px-24"
+            >
+              <md-icon
+                style="color: green"
+                class="px-4"
+              >check_circle_outline</md-icon> Successfully setup your user for secured communication.
+            </span>
+            <span v-else-if="loadingStatus === 'failed'">
+              <md-icon
+                style="color: red;"
+                class="px-4"
+              >warning</md-icon>
+              <b>Warning:</b> Failed to connect to server. Your wallet can not participate in secured communication.
+            </span>
+          </md-label>
+          <div
+            v-if="cards.length"
+            class="md-card px-24"
+            md-with-hover
+          >
+            <md-card-content>
+              <ul class="credential-list">
+                <li
+                  v-for="(card, index) in cards"
+                  :key="index"
+                  @click="toggleCard(card)"
+                >
+                  <transition name="flip">
+                    <div
+                      v-if="!card.flipped"
+                      :key="card.flipped"
+                      class="card"
+                    >
+                      <div class="cardContent">
+                        <div class="cardHeader">
+                          {{ credDisplayName(card.content) }}
+                        </div>
 
-                                                <university-card
-                                                        v-if="credDisplayName(card.content) === 'Bachelor Degree' || credDisplayName(card.content) === 'University Degree Credential'"
-                                                        :item="card.content"
-                                                />
-                                                <permanent-resident-card
-                                                        v-else-if="credDisplayName(card.content) === 'Permanent Resident Card'"
-                                                        :item="card.content"
-                                                />
-                                                <travel-card
-                                                        v-else-if="credDisplayName(card.content) === 'Travel Card'"
-                                                        :item="card.content"
-                                                />
-                                                <student-card
-                                                        v-else-if="credDisplayName(card.content) === 'Student Card'"
-                                                        :item="card.content"
-                                                />
-                                                <drivers-license
-                                                        v-else-if="credDisplayName(card.content) === 'Drivers License'"
-                                                        :item="card.content"
-                                                />
-                                                <crude-product-card
-                                                        v-else-if="credDisplayName(card.content) === 'Heavy Sour Dilbit' || credDisplayName(card.content) === 'Crude Product Credential'"
-                                                        :item="card.content"
-                                                />
-                                                <mill-test-card
-                                                        v-else-if="credDisplayName(card.content) ===  'Steel Inc. CMTR' || credDisplayName(card.content) === 'Certified Mill Test Report'"
-                                                        :item="card.content"
-                                                />
-                                                <general-card v-else :item="card.content"/>
-
-                                            </div>
-                                            <!--<json-modal :item="card.content" />-->
-                                        </div>
-                                        <div v-else v-bind:key="card.flipped" class="card">
-                                            <div class="cardContent cardBack">
-                                                <p> Issuance Date: {{ card.content.credentialSubject.issue_date ||
-                                                    card.content.credentialSubject.issuedate ||
-                                                    card.content.issuanceDate || 'N/A' }} </p>
-                                                <p> Expiration Date: {{ card.content.credentialSubject.expiry_date ||
-                                                    card.content.credentialSubject.cardexpires ||
-                                                    card.content.expirationDate || 'N/A' }} </p>
-                                            </div>
-                                        </div>
-                                    </transition>
-                                </li>
-                            </ul>
-                        </md-card-content>
+                        <university-card
+                          v-if="credDisplayName(card.content) === 'Bachelor Degree' || credDisplayName(card.content) === 'University Degree Credential'"
+                          :item="card.content"
+                        />
+                        <permanent-resident-card
+                          v-else-if="credDisplayName(card.content) === 'Permanent Resident Card'"
+                          :item="card.content"
+                        />
+                        <travel-card
+                          v-else-if="credDisplayName(card.content) === 'Travel Card'"
+                          :item="card.content"
+                        />
+                        <student-card
+                          v-else-if="credDisplayName(card.content) === 'Student Card'"
+                          :item="card.content"
+                        />
+                        <drivers-license
+                          v-else-if="credDisplayName(card.content) === 'Drivers License'"
+                          :item="card.content"
+                        />
+                        <crude-product-card
+                          v-else-if="credDisplayName(card.content) === 'Heavy Sour Dilbit' || credDisplayName(card.content) === 'Crude Product Credential'"
+                          :item="card.content"
+                        />
+                        <mill-test-card
+                          v-else-if="credDisplayName(card.content) === 'Steel Inc. CMTR' || credDisplayName(card.content) === 'Certified Mill Test Report'"
+                          :item="card.content"
+                        />
+                        <general-card
+                          v-else
+                          :item="card.content"
+                        />
+                      </div>
+                      <!--<json-modal :item="card.content" />-->
                     </div>
-                    <md-empty-state v-else
-                                    md-icon="devices_other"
-                                    :md-label=error
-                                    :md-description=errorDescription>
-                    </md-empty-state>
-                </div>
-
-            </div>
+                    <div
+                      v-else
+                      :key="card.flipped"
+                      class="card"
+                    >
+                      <div class="cardContent cardBack">
+                        <p>
+                          Issuance Date: {{ card.content.credentialSubject.issue_date ||
+                            card.content.credentialSubject.issuedate ||
+                            card.content.issuanceDate || 'N/A' }}
+                        </p>
+                        <p>
+                          Expiration Date: {{ card.content.credentialSubject.expiry_date ||
+                            card.content.credentialSubject.cardexpires ||
+                            card.content.expirationDate || 'N/A' }}
+                        </p>
+                      </div>
+                    </div>
+                  </transition>
+                </li>
+              </ul>
+            </md-card-content>
+          </div>
+          <md-empty-state
+            v-else
+            md-icon="devices_other"
+            :md-label="error"
+            :md-description="errorDescription"
+          />
         </div>
+      </div>
     </div>
-
+  </div>
 </template>
 
 <script>
@@ -156,11 +190,6 @@ SPDX-License-Identifier: Apache-2.0
                 card.flipped = !card.flipped;
             },
         },
-        computed: {
-            loadingStatus() {
-                return this.getCurrentUser().setupStatus
-            }
-        },
         data() {
             return {
                 cards: [],
@@ -168,6 +197,11 @@ SPDX-License-Identifier: Apache-2.0
                 agent: null,
                 error: 'No stored credentials',
                 errorDescription: 'Your wallet is empty, there aren\'t any stored credentials to show.',
+            }
+        },
+        computed: {
+            loadingStatus() {
+                return this.getCurrentUser().setupStatus
             }
         }
     }

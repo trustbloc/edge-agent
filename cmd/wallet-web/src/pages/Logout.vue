@@ -8,8 +8,8 @@ SPDX-License-Identifier: Apache-2.0
   <div class="w-full flex justify-center">
     <button
       type="button"
-      v-on:click="logout"
       class="w-full border-2 border-solid border-red-50 md-button logout-button"
+      @click="logout"
     >
       Log Out
     </button>
