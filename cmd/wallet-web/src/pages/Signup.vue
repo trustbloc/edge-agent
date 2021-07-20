@@ -1,8 +1,4 @@
-/*
-Copyright SecureKey Technologies Inc. All Rights Reserved.
-
-SPDX-License-Identifier: Apache-2.0
-*/
+/* Copyright SecureKey Technologies Inc. All Rights Reserved. SPDX-License-Identifier: Apache-2.0 */
 
 <template>
 	<div
@@ -52,8 +48,8 @@ SPDX-License-Identifier: Apache-2.0
 							<div class="flex justify-center content-center w-full py-24 min-h-xl">
 								<Spinner v-if="loading" />
 								<button
-									v-else
 									v-for="(provider, index) in providers"
+									v-else
 									:key="index"
 									class="w-full h-11 max-w-xs flex flex-wrap items-center text-sm font-bold text-neutrals-dark py-2 px-4 mb-4
                                     bg-neutrals-softWhite rounded-md"
@@ -88,6 +84,20 @@ import { mapActions, mapGetters } from 'vuex';
 import axios from 'axios';
 
 export default {
+	components: {
+		ContentFooter,
+		Logo,
+		Spinner,
+	},
+	data() {
+		return {
+			providers: [],
+			hubOauthProvider: this.hubURL(),
+			statusMsg: '',
+			loading: true,
+			registered: false,
+		};
+	},
 	created: async function() {
 		await this.fetchProviders();
 		//TODO: issue-601 Implement cookie logic with information from the backend.
@@ -117,20 +127,6 @@ export default {
 			this.registered = true;
 		}
 		this.loading = false;
-	},
-	components: {
-		ContentFooter,
-		Logo,
-		Spinner,
-	},
-	data() {
-		return {
-			providers: [],
-			hubOauthProvider: this.hubURL(),
-			statusMsg: '',
-			loading: true,
-			registered: false,
-		};
 	},
 	methods: {
 		...mapActions({

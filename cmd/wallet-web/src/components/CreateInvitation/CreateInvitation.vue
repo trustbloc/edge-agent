@@ -16,23 +16,36 @@ SPDX-License-Identifier: Apache-2.0
         </div>
       </div>
       <md-dialog-actions>
-        <copy-button @click.native="dialog = false" :content="dialogContent"/>
+        <copy-button
+          :content="dialogContent"
+          @click.native="dialog = false"
+        />
       </md-dialog-actions>
     </md-dialog>
 
     <md-card-header data-background-color="green">
-      <h4 class="title">{{ title }}</h4>
+      <h4 class="title">
+        {{ title }}
+      </h4>
     </md-card-header>
     <md-card-content style="background-color: white;">
       <md-field>
         <label>Alias</label>
-        <md-input v-model="alias" required></md-input>
+        <md-input
+          v-model="alias"
+          required
+        />
       </md-field>
       <div style="display: flow-root">
-        <span class="error" v-if="error">{{ error }}</span>
-        <md-button class="md-button md-info md-square right"
-                   id='createInvitation'
-                   v-on:click="submit">
+        <span
+          v-if="error"
+          class="error"
+        >{{ error }}</span>
+        <md-button
+          id="createInvitation"
+          class="md-button md-info md-square right"
+          @click="submit"
+        >
           <b>Create</b>
         </md-button>
       </div>
@@ -45,14 +58,14 @@ import {mapGetters, mapActions} from 'vuex'
 import CopyButton from "../CopyButton/CopyButton";
 
 export default {
-  name: "create-invitation",
+  name: "CreateInvitation",
+  components: {CopyButton},
   props: {
     title: {
       type: String,
       default: 'Create Invitation'
     },
   },
-  components: {CopyButton},
   methods: {
     ...mapActions(['createInvitation']),
     async submit() {

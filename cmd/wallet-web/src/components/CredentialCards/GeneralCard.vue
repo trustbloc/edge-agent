@@ -5,19 +5,19 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
-    <div class="cardBody">
-        <div class="cardDetailsL">
-            <md-icon>perm_identity</md-icon>
-        </div>
-        <div class="cardDetailsR">
-            <p> {{ item.description || 'Verifiable Credential'}}</p>
-        </div>
+  <div class="cardBody">
+    <div class="cardDetailsL">
+      <md-icon>perm_identity</md-icon>
     </div>
+    <div class="cardDetailsR">
+      <p> {{ item.description || 'Verifiable Credential' }}</p>
+    </div>
+  </div>
 </template>
 
 <script>
     export default {
-        name: "general-card",
+        name: "GeneralCard",
         props: {
             item: Object,
         },

@@ -5,136 +5,192 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
-    <div class="content">
-        <md-dialog :md-active.sync="dialog">
-            <md-dialog-title>{{ dialogTitle }}</md-dialog-title>
-            <div class="content">
-                <div class="md-layout">
-                    <div class="md-layout-item">
-                        <div v-if="dialogContent === 'acceptRequestPresentationForm'">
-                            <md-field>
-                                <label>JSON Presentation</label>
-                                <md-textarea v-model="presentation"
-                                             required></md-textarea>
-                            </md-field>
-                            <span class="error" v-if="acceptRequestPresentationError">{{ acceptRequestPresentationError }}</span>
-                        </div>
-                        <div v-else-if="dialogContent === 'acceptPresentationForm'">
-                            <md-field>
-                                <label>Presentation names coma separated e.g name1,name2</label>
-                                <md-textarea v-model="presentationNames"
-                                             required></md-textarea>
-                            </md-field>
-                            <span class="error" v-if="acceptPresentationError">{{ acceptPresentationError }}</span>
-                        </div>
-                        <pre v-else>{{ dialogContent }}</pre>
-                    </div>
-                </div>
-            </div>
-            <md-dialog-actions v-if="dialogContent === 'acceptRequestPresentationForm'">
-                <md-button class="md-button md-info md-square"
-                           v-on:click="acceptRequestPresentation(selectedAction,true)">Send
-                </md-button>
-            </md-dialog-actions>
-            <md-dialog-actions v-else-if="dialogContent === 'acceptPresentationForm'">
-                <md-button class="md-button md-info md-square" v-on:click="acceptPresentation(selectedAction,true)">Send
-                </md-button>
-            </md-dialog-actions>
-            <md-dialog-actions v-else>
-                <md-button class="md-button md-info md-square" @click="dialog = false">Close</md-button>
-            </md-dialog-actions>
-        </md-dialog>
-
+  <div class="content">
+    <md-dialog :md-active.sync="dialog">
+      <md-dialog-title>{{ dialogTitle }}</md-dialog-title>
+      <div class="content">
         <div class="md-layout">
-            <div class="md-layout-item">
-                <div class="md-layout-item">
-                    <md-card class="md-card-plain">
-                        <md-card-header data-background-color="green">
-                            <h4 class="title">Send Request Presentation</h4>
-                        </md-card-header>
-                        <md-card-content style="background-color: white;">
-                            <md-field>
-                                <label>JSON RequestPresentation</label>
-                                <md-textarea v-model="requestPresentation"
-                                             required></md-textarea>
-                            </md-field>
-                            <div class="md-layout md-gutter">
-                                <div class="md-layout-item">
-                                    <md-field>
-                                        <md-select v-model="requestPresentationConnection"
-                                                   md-class="offer-credential-connection"
-                                                   :disabled="connections.length === 0">
-                                            <md-option v-for="conn in connections" :key="conn.id"
-                                                       :value="conn.ConnectionID">
-                                                {{conn.TheirLabel}}
-                                            </md-option>
-                                        </md-select>
-                                    </md-field>
-                                </div>
-                            </div>
-                            <div style="display: flow-root">
-                                <span class="error"
-                                      v-if="sendRequestPresentationError">{{ sendRequestPresentationError }}</span>
-                                <span class="success"
-                                      v-if="sendRequestPresentationSuccess">{{ sendRequestPresentationSuccess }}</span>
-                                <md-button :disabled="connections.length === 0"
-                                           class="md-button md-info md-square right"
-                                           id='receiveInvitation'
-                                           v-on:click="sendRequestPresentation">
-                                    <b>Send</b>
-                                </md-button>
-                            </div>
-                        </md-card-content>
-                    </md-card>
-                </div>
+          <div class="md-layout-item">
+            <div v-if="dialogContent === 'acceptRequestPresentationForm'">
+              <md-field>
+                <label>JSON Presentation</label>
+                <md-textarea
+                  v-model="presentation"
+                  required
+                />
+              </md-field>
+              <span
+                v-if="acceptRequestPresentationError"
+                class="error"
+              >{{ acceptRequestPresentationError }}</span>
             </div>
-            <div class="md-layout-item">
-                <md-card class="md-card-plain">
-                    <md-card-header data-background-color="green">
-                        <h4 class="title">Actions</h4>
-                        <md-button v-on:click="refreshActions"
-                                   class="md-icon-button md-dense md-raised md-info right refresh-connections">
-                            <md-icon>cached</md-icon>
-                        </md-button>
-                    </md-card-header>
-                    <md-card-content style="background-color: white;">
-                        <div class="text-center" v-if="actions.length===0">No actions</div>
-                        <md-content class="md-content-actions md-scrollbar">
-                            <md-list class="md-triple-line">
-                                <md-list-item v-for="action in actions" :key="action.id">
-                                    <div class="md-list-item-text">
-                                        <span>PIID: {{action.PIID}}</span>
-                                    </div>
-                                    <md-button v-if="isRequestPresentation(action)"
-                                               v-on:click="acceptRequestPresentation(action)"
-                                               class="md-icon-button md-dense md-raised md-info right">
-                                        <md-icon>done</md-icon>
-                                    </md-button>
-                                    <md-button v-if="isRequestPresentation(action)"
-                                               v-on:click="declineRequestPresentation(action)"
-                                               class="md-icon-button md-dense md-raised md-danger right">
-                                        <md-icon>close</md-icon>
-                                    </md-button>
-
-                                    <md-button v-if="isPresentation(action)"
-                                               v-on:click="acceptPresentation(action)"
-                                               class="md-icon-button md-dense md-raised md-info right">
-                                        <md-icon>done</md-icon>
-                                    </md-button>
-                                    <md-button v-if="isPresentation(action)"
-                                               v-on:click="declinePresentation(action)"
-                                               class="md-icon-button md-dense md-raised md-danger right">
-                                        <md-icon>close</md-icon>
-                                    </md-button>
-
-                                </md-list-item>
-                            </md-list>
-                        </md-content>
-                    </md-card-content>
-                </md-card>
+            <div v-else-if="dialogContent === 'acceptPresentationForm'">
+              <md-field>
+                <label>Presentation names coma separated e.g name1,name2</label>
+                <md-textarea
+                  v-model="presentationNames"
+                  required
+                />
+              </md-field>
+              <span
+                v-if="acceptPresentationError"
+                class="error"
+              >{{ acceptPresentationError }}</span>
             </div>
+            <pre v-else>{{ dialogContent }}</pre>
+          </div>
         </div>
+      </div>
+      <md-dialog-actions v-if="dialogContent === 'acceptRequestPresentationForm'">
+        <md-button
+          class="md-button md-info md-square"
+          @click="acceptRequestPresentation(selectedAction,true)"
+        >
+          Send
+        </md-button>
+      </md-dialog-actions>
+      <md-dialog-actions v-else-if="dialogContent === 'acceptPresentationForm'">
+        <md-button
+          class="md-button md-info md-square"
+          @click="acceptPresentation(selectedAction,true)"
+        >
+          Send
+        </md-button>
+      </md-dialog-actions>
+      <md-dialog-actions v-else>
+        <md-button
+          class="md-button md-info md-square"
+          @click="dialog = false"
+        >
+          Close
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <div class="md-layout">
+      <div class="md-layout-item">
+        <div class="md-layout-item">
+          <md-card class="md-card-plain">
+            <md-card-header data-background-color="green">
+              <h4 class="title">
+                Send Request Presentation
+              </h4>
+            </md-card-header>
+            <md-card-content style="background-color: white;">
+              <md-field>
+                <label>JSON RequestPresentation</label>
+                <md-textarea
+                  v-model="requestPresentation"
+                  required
+                />
+              </md-field>
+              <div class="md-layout md-gutter">
+                <div class="md-layout-item">
+                  <md-field>
+                    <md-select
+                      v-model="requestPresentationConnection"
+                      md-class="offer-credential-connection"
+                      :disabled="connections.length === 0"
+                    >
+                      <md-option
+                        v-for="conn in connections"
+                        :key="conn.id"
+                        :value="conn.ConnectionID"
+                      >
+                        {{ conn.TheirLabel }}
+                      </md-option>
+                    </md-select>
+                  </md-field>
+                </div>
+              </div>
+              <div style="display: flow-root">
+                <span
+                  v-if="sendRequestPresentationError"
+                  class="error"
+                >{{ sendRequestPresentationError }}</span>
+                <span
+                  v-if="sendRequestPresentationSuccess"
+                  class="success"
+                >{{ sendRequestPresentationSuccess }}</span>
+                <md-button
+                  id="receiveInvitation"
+                  :disabled="connections.length === 0"
+                  class="md-button md-info md-square right"
+                  @click="sendRequestPresentation"
+                >
+                  <b>Send</b>
+                </md-button>
+              </div>
+            </md-card-content>
+          </md-card>
+        </div>
+      </div>
+      <div class="md-layout-item">
+        <md-card class="md-card-plain">
+          <md-card-header data-background-color="green">
+            <h4 class="title">
+              Actions
+            </h4>
+            <md-button
+              class="md-icon-button md-dense md-raised md-info right refresh-connections"
+              @click="refreshActions"
+            >
+              <md-icon>cached</md-icon>
+            </md-button>
+          </md-card-header>
+          <md-card-content style="background-color: white;">
+            <div
+              v-if="actions.length===0"
+              class="text-center"
+            >
+              No actions
+            </div>
+            <md-content class="md-content-actions md-scrollbar">
+              <md-list class="md-triple-line">
+                <md-list-item
+                  v-for="action in actions"
+                  :key="action.id"
+                >
+                  <div class="md-list-item-text">
+                    <span>PIID: {{ action.PIID }}</span>
+                  </div>
+                  <md-button
+                    v-if="isRequestPresentation(action)"
+                    class="md-icon-button md-dense md-raised md-info right"
+                    @click="acceptRequestPresentation(action)"
+                  >
+                    <md-icon>done</md-icon>
+                  </md-button>
+                  <md-button
+                    v-if="isRequestPresentation(action)"
+                    class="md-icon-button md-dense md-raised md-danger right"
+                    @click="declineRequestPresentation(action)"
+                  >
+                    <md-icon>close</md-icon>
+                  </md-button>
+
+                  <md-button
+                    v-if="isPresentation(action)"
+                    class="md-icon-button md-dense md-raised md-info right"
+                    @click="acceptPresentation(action)"
+                  >
+                    <md-icon>done</md-icon>
+                  </md-button>
+                  <md-button
+                    v-if="isPresentation(action)"
+                    class="md-icon-button md-dense md-raised md-danger right"
+                    @click="declinePresentation(action)"
+                  >
+                    <md-icon>close</md-icon>
+                  </md-button>
+                </md-list-item>
+              </md-list>
+            </md-content>
+          </md-card-content>
+        </md-card>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>

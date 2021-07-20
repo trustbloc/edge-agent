@@ -7,29 +7,55 @@ SPDX-License-Identifier: Apache-2.0
 <template>
   <md-card class="md-card-plain">
     <md-card-header data-background-color="green">
-      <h4 class="title">{{ title }}</h4>
+      <h4 class="title">
+        {{ title }}
+      </h4>
     </md-card-header>
     <md-card-content style="background-color: white;">
       <md-field>
         <label>Mediator URL</label>
-        <md-input placeholder="http://router.example.com" v-model="URL" required></md-input>
+        <md-input
+          v-model="URL"
+          placeholder="http://router.example.com"
+          required
+        />
       </md-field>
       <div style="display: flow-root">
-        <span class="error" v-if="error">{{ error }}</span>
-        <md-button v-bind:disabled="disabled" class="md-button md-info md-square right" v-on:click="register">
+        <span
+          v-if="error"
+          class="error"
+        >{{ error }}</span>
+        <md-button
+          :disabled="disabled"
+          class="md-button md-info md-square right"
+          @click="register"
+        >
           <b>Register</b>
         </md-button>
       </div>
     </md-card-content>
-    <md-card-content v-for="connection in getMediatorConnections" style="background-color: white;" :key="connection">
+    <md-card-content
+      v-for="connection in getMediatorConnections"
+      :key="connection"
+      style="background-color: white;"
+    >
       <div class="md-layout router">
-        <div class="md-layout-item md-layout" style="padding-right: 0px">
+        <div
+          class="md-layout-item md-layout"
+          style="padding-right: 0px"
+        >
           <div class="md-layout-item router-done">
             <div>Mediator is registered {{ connection }}</div>
           </div>
-          <div class="md-layout-item md-size-25" style="padding-right: 0px">
-            <md-button class="md-button md-danger md-square right" id='routerUnregister'
-                       v-on:click="unregisteredMediator(connection)">
+          <div
+            class="md-layout-item md-size-25"
+            style="padding-right: 0px"
+          >
+            <md-button
+              id="routerUnregister"
+              class="md-button md-danger md-square right"
+              @click="unregisteredMediator(connection)"
+            >
               <b>Unregister</b>
             </md-button>
           </div>
@@ -43,7 +69,7 @@ SPDX-License-Identifier: Apache-2.0
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
-  name: "mediator",
+  name: "Mediator",
   props: {
     title: {
       type: String,

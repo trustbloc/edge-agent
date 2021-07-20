@@ -28,10 +28,25 @@ SPDX-License-Identifier: Apache-2.0
                 </slot>
               </div>
         </div>
+        <div class="sidebar-wrapper flex-grow flex flex-col justify-between mt-8">
+          <slot name="content" />
+          <slot>
+            <ul class="mt-12">
+              <li class="">
+                <sidebar-link
+                  v-for="(link, index) in sidebarLinks"
+                  :key="link.name + index"
+                  :to="link.path"
+                  :link="link"
+                />
+              </li>
+            </ul>
+          </slot>
+        </div>
+      </div>
       <!-- Sidebar ends -->
     </div>
-    </div>
-  </template>
+</template>
   <script>
   import SidebarLink from "./SidebarLink.vue";
   import Logo from '@/components/Logo/Logo.vue';

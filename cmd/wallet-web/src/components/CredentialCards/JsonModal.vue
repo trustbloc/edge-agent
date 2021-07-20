@@ -5,28 +5,36 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 <template>
-    <div>
-        <md-dialog :md-active.sync="showDialog" style="max-width: 75% !important;">
-            <md-dialog-title
-                    style="background-color: #00bcd4">
-                {{credDisplayName(item)}}
-            </md-dialog-title>
-            <md-content class="md-dialog-container">
-                <vue-json-pretty
-                        :data="item">
-                </vue-json-pretty>
-            </md-content>
+  <div>
+    <md-dialog
+      :md-active.sync="showDialog"
+      style="max-width: 75% !important;"
+    >
+      <md-dialog-title
+        style="background-color: #00bcd4"
+      >
+        {{ credDisplayName(item) }}
+      </md-dialog-title>
+      <md-content class="md-dialog-container">
+        <vue-json-pretty
+          :data="item"
+        />
+      </md-content>
 
-            <md-dialog-actions style="float: right; padding: 20px;">
-                <md-button
-                        class="md-primary"
-                        @click="showDialog = false">
-                    Close
-                </md-button>
-            </md-dialog-actions>
-        </md-dialog>
-        <span  @click.stop="showDialog = true" class="infoIcon"><md-icon>info</md-icon></span>
-    </div>
+      <md-dialog-actions style="float: right; padding: 20px;">
+        <md-button
+          class="md-primary"
+          @click="showDialog = false"
+        >
+          Close
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
+    <span
+      class="infoIcon"
+      @click.stop="showDialog = true"
+    ><md-icon>info</md-icon></span>
+  </div>
 </template>
 
 <script>

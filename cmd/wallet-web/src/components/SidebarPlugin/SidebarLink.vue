@@ -8,8 +8,8 @@ SPDX-License-Identifier: Apache-2.0
   <li class="md-list-item">
     <router-link
       class="md-list-item-router md-list-item-container md-button-clean"
-      @click="hideSidebar"
       v-bind="$attrs"
+      @click="hideSidebar"
     >
       <div class="md-list-item-content md-ripple">
         <slot>

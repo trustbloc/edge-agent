@@ -7,17 +7,31 @@ SPDX-License-Identifier: Apache-2.0
 <template>
   <md-card class="md-card-plain">
     <md-card-header data-background-color="green">
-      <h4 class="title">{{ title }}</h4>
+      <h4 class="title">
+        {{ title }}
+      </h4>
     </md-card-header>
     <md-card-content style="background-color: white;">
       <md-field>
         <label>Invitation ({{ type }})</label>
-        <md-textarea v-model="invitation" required></md-textarea>
+        <md-textarea
+          v-model="invitation"
+          required
+        />
       </md-field>
       <div style="display: flow-root">
-        <span class="error" v-if="error">{{ error }}</span>
-        <span class="success" v-if="success">{{ success }}</span>
-        <md-button class="md-button md-info md-square right" v-on:click="submit">
+        <span
+          v-if="error"
+          class="error"
+        >{{ error }}</span>
+        <span
+          v-if="success"
+          class="success"
+        >{{ success }}</span>
+        <md-button
+          class="md-button md-info md-square right"
+          @click="submit"
+        >
           <b>Receive</b>
         </md-button>
       </div>
@@ -29,7 +43,7 @@ SPDX-License-Identifier: Apache-2.0
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
-  name: "receive-invitation",
+  name: "ReceiveInvitation",
   props: {
     title: {
       type: String,

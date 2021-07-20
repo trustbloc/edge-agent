@@ -14,8 +14,8 @@ SPDX-License-Identifier: Apache-2.0
 import { mapGetters } from 'vuex';
 
 export default {
+    name: "Logo",
     inheritAttrs: false,
-    name: "logo",
     data() {
         return {
             logoUrl: this.getLogoUrl(),
